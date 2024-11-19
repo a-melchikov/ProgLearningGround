@@ -1,3 +1,10 @@
+__all__ = [
+    "LogConfig",
+    "LoggerSetup",
+    "LogLevel",
+    "get_logger",
+]
+
 from dataclasses import dataclass
 from enum import Enum
 import logging
@@ -142,13 +149,6 @@ def get_logger(logger_name: str = "default") -> Logger:
     logger_setup = LoggerSetup(log_config=log_config, logger_name=logger_name)
     return logger_setup.get_logger()
 
-
-__all__ = [
-    "LogConfig",
-    "LoggerSetup",
-    "LogLevel",
-    "get_logger",
-]
 
 if __name__ == "__main__":
     logger = get_logger(__name__)
