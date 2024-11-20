@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field, ValidationError
 from typing import Any
 
+from starlette.middleware.cors import CORSMiddleware
+
 from logger_setup import get_logger
 from task_runner import run_code_in_docker
 
@@ -15,6 +17,17 @@ app = FastAPI(
         "name": "API Support",
         "email": "melchikov04@mail.ru",
     },
+)
+
+origins = [
+    "http://localhost:3000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
