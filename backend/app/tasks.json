@@ -29,10 +29,6 @@
       {
         "input": "12",
         "expected_output": "12 + 21 = 33"
-      },
-      {
-        "input": "12",
-        "expected_output": "12 + 21 = 333"
       }
     ]
   }

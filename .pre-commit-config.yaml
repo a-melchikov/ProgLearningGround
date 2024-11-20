@@ -3,6 +3,7 @@ repos:
     rev: 24.10.0
     hooks:
       - id: black
+        language: system
         args: [ "backend/" ]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -10,10 +11,9 @@ repos:
     hooks:
       - id: ruff
         name: ruff
-        entry: poetry run ruff
+        entry: ./scripts/ruff.sh
         language: system
         types: [ python ]
-        args: [ "check", "backend/", "--config", "ruff.toml" ]
         pass_filenames: false
 
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -21,20 +21,15 @@ repos:
     hooks:
       - id: mypy
         name: mypy
-        entry: poetry run mypy
+        entry: ./scripts/mypy.sh
         language: system
         types: [ python ]
-        args: [ "--config-file", "mypy.ini", "backend/" ]
         pass_filenames: false
 
   - repo: local
     hooks:
       - id: pytest
         name: pytest
-        entry: poetry run pytest
+        entry: ./scripts/pytest.sh
         language: system
         pass_filenames: false
-        args:
-          - "backend/"
-          - "--maxfail=1"
-          - "--disable-warnings"
