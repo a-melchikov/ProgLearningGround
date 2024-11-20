@@ -10,9 +10,9 @@ __all__ = [
 import json
 from typing import Any
 from pathlib import Path
-from logging import getLogger
+from logger_setup import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 
 DESCRIPTION = "description"
 INPUT = "input"
@@ -35,6 +35,7 @@ def open_tasks_json(task_name: str, json_name: str = "tasks.json") -> dict[str, 
         KeyError: If the task is not found in the JSON.
     """
     task_path = Path.cwd() / json_name
+    logger.info(f"Opening JSON file at path {task_path}")
     if not task_path.is_file():
         logger.error(f"File {json_name} not found at path {task_path}")
         raise FileNotFoundError(f"Task file {json_name} not found at {task_path}")
