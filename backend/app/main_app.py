@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field, ValidationError
 from typing import Any
@@ -6,6 +8,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from logger_setup import get_logger
 from task_runner import run_code_in_docker
+from task_data_loader import get_all_tasks_name, open_tasks_json
 
 logger = get_logger(__name__)
 
@@ -60,7 +63,7 @@ async def root() -> dict[str, str]:
 
 @app.post(
     "/send_task/{task_name}/",
-    tags=["Task Execution"],
+    tags=["Tasks"],
     response_model=dict[str, Any],
 )
 async def send_task(task_name: str, code: Code) -> dict[str, Any]:
@@ -99,6 +102,68 @@ async def send_task(task_name: str, code: Code) -> dict[str, Any]:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred.",
+        ) from e
+
+
+@app.get(
+    "/tasks/",
+    tags=["Tasks"],
+    response_model=list[str],
+)
+async def get_tasks() -> list[str]:
+    """
+    Endpoint to retrieve the list of available tasks.
+
+    Returns:
+        list[str]: A list of available tasks.
+    """
+    logger.info("Fetching list of tasks.")
+    try:
+        return get_all_tasks_name()
+    except FileNotFoundError as e:
+        logger.error(f"Tasks file not found: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tasks file not found.",
+        ) from e
+    except json.JSONDecodeError as e:
+        logger.error(f"Error decoding tasks JSON: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error decoding tasks JSON.",
+        ) from e
+
+
+@app.get(
+    "/task_details/{task_name}/",
+    tags=["Tasks"],
+    response_model=dict[str, Any],
+)
+async def get_task_details(task_name: str) -> dict[str, Any]:
+    """
+    Endpoint to retrieve task details.
+
+    Args:
+        task_name (str): The name of the task.
+
+    Returns:
+        dict[str, Any]: A task details.
+    """
+    logger.info(f"Fetching details for task: {task_name}")
+    try:
+        task_details = open_tasks_json(task_name=task_name)
+        return task_details
+    except FileNotFoundError as e:
+        logger.error(f"Task not found: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Task '{task_name}' not found.",
+        ) from e
+    except json.JSONDecodeError as e:
+        logger.error(f"Error decoding task JSON: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error decoding task JSON.",
         ) from e
 
 

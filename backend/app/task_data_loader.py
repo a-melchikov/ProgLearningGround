@@ -1,5 +1,6 @@
 __all__ = [
     "open_tasks_json",
+    "get_all_tasks_name",
     "DESCRIPTION",
     "INPUT",
     "OUTPUT",
@@ -59,3 +60,19 @@ def open_tasks_json(task_name: str, json_name: str = "tasks.json") -> dict[str, 
     logger.info(f"Task examples: {examples}")
 
     return task_data
+
+
+def get_all_tasks_name(json_name: str = "tasks.json") -> list[str]:
+    task_path = Path.cwd() / json_name
+    logger.info(f"Opening JSON file at path {task_path}")
+    if not task_path.is_file():
+        logger.error(f"File {json_name} not found at path {task_path}")
+        return []
+
+    try:
+        with open(task_path, "r", encoding="utf-8") as f:
+            data: dict[str, Any] = json.load(f)
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parsing error in file {json_name}: {e}")
+        raise ValueError(f"Invalid JSON format in file {json_name}") from e
+    return list(data.keys())

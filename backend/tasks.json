@@ -31,5 +31,230 @@
         "expected_output": "12 + 21 = 33"
       }
     ]
+  },
+  "reverse_string": {
+    "description": "Дана строка. Нужно вернуть ее в обратном порядке.",
+    "input": "Строка, состоящая из букв и цифр.",
+    "output": "Строка, записанная в обратном порядке.",
+    "examples": [
+      {
+        "input": "hello",
+        "output": "olleh"
+      },
+      {
+        "input": "12345",
+        "output": "54321"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "apple",
+        "expected_output": "elppa"
+      },
+      {
+        "input": "openai",
+        "expected_output": "ianepo"
+      }
+    ]
+  },
+  "count_vowels": {
+    "description": "Дана строка. Нужно посчитать количество гласных букв в строке.",
+    "input": "Строка, состоящая из букв.",
+    "output": "Количество гласных букв в строке.",
+    "examples": [
+      {
+        "input": "hello",
+        "output": "2"
+      },
+      {
+        "input": "abcdef",
+        "output": "2"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "aeiou",
+        "expected_output": "5"
+      },
+      {
+        "input": "rhythm",
+        "expected_output": "0"
+      }
+    ]
+  },
+  "even_or_odd": {
+    "description": "Дано целое число. Нужно вывести, четное оно или нечетное.",
+    "input": "Целое число.",
+    "output": "Если число четное, вывести 'Четное', иначе 'Нечетное'.",
+    "examples": [
+      {
+        "input": "42",
+        "output": "Четное"
+      },
+      {
+        "input": "13",
+        "output": "Нечетное"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "88",
+        "expected_output": "Четное"
+      },
+      {
+        "input": "77",
+        "expected_output": "Нечетное"
+      }
+    ]
+  },
+  "sum_of_multiples": {
+    "description": "Дано число. Нужно найти сумму всех чисел, кратных 3 и 5, до этого числа (не включая само число).",
+    "input": "Целое число.",
+    "output": "Сумма чисел, кратных 3 и 5.",
+    "examples": [
+      {
+        "input": "10",
+        "output": "23"
+      },
+      {
+        "input": "20",
+        "output": "78"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "50",
+        "expected_output": "533"
+      },
+      {
+        "input": "30",
+        "expected_output": "195"
+      }
+    ]
+  },
+  "find_max_digit": {
+    "description": "Дано число. Нужно найти максимальную цифру в этом числе.",
+    "input": "Целое число.",
+    "output": "Максимальная цифра в числе.",
+    "examples": [
+      {
+        "input": "438",
+        "output": "8"
+      },
+      {
+        "input": "271",
+        "output": "7"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "492",
+        "expected_output": "9"
+      },
+      {
+        "input": "106",
+        "expected_output": "6"
+      }
+    ]
+  },
+  "is_palindrome_number": {
+    "description": "Дано число. Нужно проверить, является ли оно палиндромом.",
+    "input": "Целое число.",
+    "output": "Если число является палиндромом, вывести 'Да', иначе 'Нет'.",
+    "examples": [
+      {
+        "input": "121",
+        "output": "Да"
+      },
+      {
+        "input": "123",
+        "output": "Нет"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "1221",
+        "expected_output": "Да"
+      },
+      {
+        "input": "4321",
+        "expected_output": "Нет"
+      }
+    ]
+  },
+  "fibonacci_number": {
+    "description": "Дано число N. Нужно найти N-й элемент последовательности Фибоначчи.",
+    "input": "Целое число N.",
+    "output": "N-й элемент последовательности Фибоначчи.",
+    "examples": [
+      {
+        "input": "5",
+        "output": "5"
+      },
+      {
+        "input": "8",
+        "output": "21"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "10",
+        "expected_output": "55"
+      },
+      {
+        "input": "15",
+        "expected_output": "610"
+      }
+    ]
+  },
+  "count_words_in_sentence": {
+    "description": "Дана строка, представляющая собой предложение. Нужно подсчитать количество слов в нем.",
+    "input": "Строка, представляющая собой предложение.",
+    "output": "Количество слов в строке.",
+    "examples": [
+      {
+        "input": "Hello World",
+        "output": "2"
+      },
+      {
+        "input": "Python is amazing",
+        "output": "3"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "How are you?",
+        "expected_output": "3"
+      },
+      {
+        "input": "This is a test sentence",
+        "expected_output": "5"
+      }
+    ]
+  },
+  "remove_duplicates": {
+    "description": "Дан список чисел. Нужно удалить все дубли и вернуть уникальные элементы.",
+    "input": "Список чисел.",
+    "output": "Список уникальных чисел.",
+    "examples": [
+      {
+        "input": "[1, 2, 2, 3, 4, 4, 5]",
+        "output": "[1, 2, 3, 4, 5]"
+      },
+      {
+        "input": "[7, 8, 7, 9, 10]",
+        "output": "[7, 8, 9, 10]"
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "[1, 2, 2, 1]",
+        "expected_output": "[1, 2]"
+      },
+      {
+        "input": "[3, 4, 4, 4, 5]",
+        "expected_output": "[3, 4, 5]"
+      }
+    ]
   }
 }
