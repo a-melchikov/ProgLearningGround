@@ -4,6 +4,8 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir poetry
 
+RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
+
 COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-dev
