@@ -8,7 +8,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - ./backend/app:/app/app
+      - ./backend/pyproject.toml:/app/pyproject.toml
+      - ./backend/poetry.lock:/app/poetry.lock
+      - ./backend/tests:/app/tests
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - ENV=development

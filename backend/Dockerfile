@@ -4,11 +4,13 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir poetry
 
+RUN poetry config virtualenvs.in-project true
+
 RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry install --no-dev
+RUN poetry install --no-dev --no-interaction --no-ansi
 
 ENV PYTHONPATH=/app/app
 
