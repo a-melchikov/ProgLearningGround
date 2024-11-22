@@ -63,6 +63,15 @@ def open_tasks_json(task_name: str, json_name: str = "tasks.json") -> dict[str, 
 
 
 def get_all_tasks_name(json_name: str = "tasks.json") -> list[str]:
+    """
+    Returns a list of all task names from the JSON file.
+
+    Args:
+        json_name (str): The name of the JSON file.
+
+    Returns:
+        list[str]: List of task names.
+    """
     task_path = Path.cwd() / json_name
     logger.info(f"Opening JSON file at path {task_path}")
     if not task_path.is_file():

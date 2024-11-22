@@ -119,7 +119,8 @@ async def get_tasks() -> list[str]:
     """
     logger.info("Fetching list of tasks.")
     try:
-        return get_all_tasks_name()
+        task_names: list[str] = get_all_tasks_name()
+        return task_names
     except FileNotFoundError as e:
         logger.error(f"Tasks file not found: {e}")
         raise HTTPException(
@@ -151,7 +152,7 @@ async def get_task_details(task_name: str) -> dict[str, Any]:
     """
     logger.info(f"Fetching details for task: {task_name}")
     try:
-        task_details = open_tasks_json(task_name=task_name)
+        task_details: dict[str, Any] = open_tasks_json(task_name=task_name)
         return task_details
     except FileNotFoundError as e:
         logger.error(f"Task not found: {e}")
