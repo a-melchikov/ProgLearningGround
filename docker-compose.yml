@@ -16,8 +16,11 @@ services:
     environment:
       - ENV=development
       - PYTHONPATH=/app/app
+      - MONGO_URI=mongodb://mongo:27017/task_database
     networks:
       - my_network
+    depends_on:
+      - mongo
 
   frontend:
     build:
@@ -33,6 +36,24 @@ services:
       - my_network
     depends_on:
       - backend
+
+  mongo:
+    image: mongo:8.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: task_database
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - my_network
+
+volumes:
+  mongo_data:
+    driver: local
 
 networks:
   my_network:

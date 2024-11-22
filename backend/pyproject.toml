@@ -10,6 +10,7 @@ python = "^3.12"
 fastapi = {extras = ["all"], version = "^0.115.5"}
 uvicorn = "^0.32.0"
 docker = "^7.1.0"
+pymongo = "^4.10.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
@@ -17,6 +18,7 @@ ruff = "^0.7.4"
 mypy = "^1.13.0"
 pre-commit = "^4.0.1"
 pytest = "^8.3.3"
+pytest-asyncio = "^0.24.0"
 
 [build-system]
 requires = ["poetry-core"]
