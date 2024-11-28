@@ -1,26 +1,31 @@
 from typing import Any
 
+from app.errors.base import (
+    RepositoryError,
+    NotFoundError,
+    InvalidDataError,
+    DatabaseConnectionError,
+)
 
-class TaskRepositoryError(Exception):
+
+class TaskRepositoryError(RepositoryError):
     """
     Exception raised when a task repository operation fails.
     """
 
-    def __init__(self, message: str, *args: Any) -> None:
-        super().__init__(message, *args)
+    pass
 
 
-class TaskNotFound(TaskRepositoryError):
+class TaskNotFound(NotFoundError):
     """
     Exception raised when a task is not found.
     """
 
-    def __init__(self, task_name: str) -> None:
-        message = f"Task '{task_name}' not found."
-        super().__init__(message)
+    def __init__(self, entity: str, query: dict[str, Any]) -> None:
+        super().__init__(entity, query)
 
 
-class DatabaseConnectionError(TaskRepositoryError):
+class TaskDatabaseConnectionError(DatabaseConnectionError):
     """
     Exception raised when a database connection fails.
     """
@@ -29,7 +34,7 @@ class DatabaseConnectionError(TaskRepositoryError):
         super().__init__(message)
 
 
-class InvalidTaskDataError(TaskRepositoryError):
+class InvalidTaskDataError(InvalidDataError):
     """
     Exception raised when invalid task data is provided.
     """
