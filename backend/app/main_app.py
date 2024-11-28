@@ -6,9 +6,12 @@ from typing import Any
 
 from starlette.middleware.cors import CORSMiddleware
 
+from app.middlewares.exception_middleware import ExceptionMiddleware
+from app.middlewares.logging_middleware import LoggingMiddleware
 from logger_setup import get_logger
 from task_runner import run_code_in_docker
 from task_data_loader import get_all_tasks_name, open_tasks_json
+from api.v1 import router as router_v1
 
 logger = get_logger(__name__)
 
@@ -32,6 +35,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(ExceptionMiddleware)
+
+app.include_router(router=router_v1, prefix="/api/v1")
 
 
 class Code(BaseModel):
