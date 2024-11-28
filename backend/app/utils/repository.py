@@ -17,15 +17,17 @@ class AbstractRepository(ABC):
     """
 
     @abstractmethod
-    async def add_one(self, data: dict[str, Any]) -> Any:
+    async def add_one(self, data: dict[str, Any]) -> dict[str, Any]:
         raise NotImplementedError
 
     @abstractmethod
-    async def find_one(self, filter_query: dict[str, Any]) -> Any:
+    async def find_one(self, filter_query: dict[str, Any]) -> dict[str, Any]:
         raise NotImplementedError
 
     @abstractmethod
-    async def find_all(self, filter_query: dict[str, Any] | None = None) -> list[Any]:
+    async def find_all(
+        self, filter_query: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
         raise NotImplementedError
 
     @abstractmethod
@@ -72,7 +74,7 @@ class MongoDBRepository(AbstractRepository):
                 f"Error while accessing collection '{self.collection_name}': {str(e)}"
             ) from e
 
-    async def add_one(self, data: dict[str, Any]) -> Any:
+    async def add_one(self, data: dict[str, Any]) -> dict[str, Any]:
         """
         Adds a single document to the collection.
         """
@@ -88,7 +90,7 @@ class MongoDBRepository(AbstractRepository):
                 f"Error while inserting {self.log_name} data: {str(e)}"
             ) from e
 
-    async def find_one(self, filter_query: dict[str, Any]) -> Any:
+    async def find_one(self, filter_query: dict[str, Any]) -> dict[str, Any]:
         """
         Finds a single document in the collection based on a filter query.
         """
@@ -113,7 +115,9 @@ class MongoDBRepository(AbstractRepository):
                 f"Error while accessing database for {self.log_name}: {str(e)}"
             ) from e
 
-    async def find_all(self, filter_query: dict[str, Any] | None = None) -> list[Any]:
+    async def find_all(
+        self, filter_query: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
         """
         Finds all documents in the collection that match the filter query.
         """
