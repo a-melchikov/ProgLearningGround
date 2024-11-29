@@ -188,3 +188,27 @@ class MongoDBRepository(AbstractRepository):
             raise self.database_connection_error(
                 f"Error while deleting {self.log_name}: {str(e)}"
             ) from e
+
+    async def add_many(self, data: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """
+        Adds multiple documents to the collection.
+        """
+        try:
+            if not data:
+                raise ValueError("Input data for 'add_many' cannot be empty.")
+            collection = await self._get_collection()
+            result = await collection.insert_many(data)
+            for i, doc_id in enumerate(result.inserted_ids):
+                data[i]["_id"] = str(doc_id)
+            logger.info(f"Inserted {len(data)} {self.log_name}(s) into the collection.")
+            return data
+        except errors.BulkWriteError as bwe:
+            logger.error(f"Bulk write error: {bwe.details}")
+            raise self.database_connection_error(
+                f"Bulk write error while inserting {self.log_name} data: {str(bwe)}"
+            ) from bwe
+        except errors.PyMongoError as e:
+            logger.error(f"Database error while adding many {self.log_name}: {str(e)}")
+            raise self.database_connection_error(
+                f"Error while inserting many {self.log_name} data: {str(e)}"
+            ) from e

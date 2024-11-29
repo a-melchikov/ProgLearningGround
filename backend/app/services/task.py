@@ -48,3 +48,13 @@ class TaskService:
         Delete a task by its name.
         """
         await self.task_repository.delete_one({"name": name})
+
+    async def create_many_tasks(
+        self, tasks_data: list[TaskCreateSchema]
+    ) -> list[TaskSchema]:
+        """
+        Create multiple tasks.
+        """
+        tasks_dict = [task.model_dump() for task in tasks_data]
+        created_tasks = await self.task_repository.add_many(tasks_dict)
+        return [TaskSchema.model_validate(task) for task in created_tasks]

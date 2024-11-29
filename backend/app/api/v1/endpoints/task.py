@@ -63,6 +63,20 @@ async def create_task(
     return created_task
 
 
+@router.post(
+    "/bulk", response_model=list[TaskSchema], status_code=status.HTTP_201_CREATED
+)
+async def create_tasks_bulk(
+    tasks_data: list[TaskCreateSchema],
+    task_service: Annotated[TaskService, Depends(get_task_service)],
+) -> list[TaskSchema]:
+    """
+    Create multiple tasks in bulk.
+    """
+    created_tasks = await task_service.create_many_tasks(tasks_data)
+    return created_tasks
+
+
 @router.put("/{name}", response_model=TaskSchema)
 async def update_task(  # type: ignore
     name: str,
