@@ -3,14 +3,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from pymongo import errors
 from pymongo.asynchronous.collection import AsyncCollection
 
-from app.database import AsyncMongoDBClient
+from app.db.database import AsyncMongoDBClient
 from app.errors.task_errors import TaskNotFound, DatabaseConnectionError
 from app.repositories.task import TaskRepository
 
 
 @pytest.fixture
 def mock_db_client():
-    with patch("app.database.AsyncMongoClient") as mock_client:
+    with patch("app.db.database.AsyncMongoClient") as mock_client:
         client = AsyncMongoDBClient()
         client._connected = True
         client._client = mock_client

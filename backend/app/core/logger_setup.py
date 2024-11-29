@@ -47,7 +47,7 @@ class LogConfig:
     """
 
     level: LogLevel = LogLevel.INFO
-    filename: str | None = "app.log"
+    filename: str | None = "../app.log"
     max_bytes: int = 500_000
     backup_count: int = 1
     console_level: LogLevel = LogLevel.DEBUG

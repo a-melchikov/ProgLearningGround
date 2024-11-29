@@ -1,12 +1,15 @@
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Depends, status
+from pydantic import ValidationError
 
 from app.api.v1.dependencies import get_task_service
 from app.errors.task_errors import TaskNotFound
-from app.logger_setup import get_logger
+from app.core.logger_setup import get_logger
+from app.schemas.code import Code
 from app.services.task import TaskService
 from app.schemas.task import TaskSchema, TaskCreateSchema, TaskUpdateSchema
+from app.utils.task_runner import run_code_in_docker
 
 logger = get_logger(__name__)
 router = APIRouter()
@@ -88,3 +91,35 @@ async def delete_task(
         await task_service.delete_task(name)
     except TaskNotFound as e:
         handle_task_not_found(name, e)
+
+
+@router.post(
+    "/send_task/{task_name}/",
+    tags=["Tasks"],
+    response_model=dict[str, str],
+)
+async def send_task(task_name: str, code: Code) -> dict[str, str]:
+    """
+    Endpoint to execute user code against a specific task.
+
+    Args:
+        task_name (str): The name of the task.
+        code (Code): User-submitted code.
+
+    Returns:
+        dict[str, Any]: The result of the execution or an error message.
+
+    Raises:
+        HTTPException: If execution fails or the task does not exist.
+    """
+    logger.info(f"Received task '{task_name}' with user code.")
+    try:
+        result = await run_code_in_docker(task_name, code.code)
+        logger.info(f"Execution completed for task '{task_name}'. Result: {result}")
+        return {"result": result}
+    except ValidationError as ve:
+        logger.error(f"Validation error for task '{task_name}': {ve}")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Validation Error: {ve.errors()}",
+        ) from ve

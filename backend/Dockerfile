@@ -6,7 +6,7 @@ RUN pip install --no-cache-dir poetry
 
 RUN poetry config virtualenvs.in-project true
 
-RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y docker.io curl && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml poetry.lock ./
 
@@ -18,4 +18,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "uvicorn", "app.main_app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

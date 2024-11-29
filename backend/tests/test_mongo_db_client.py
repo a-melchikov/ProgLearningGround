@@ -1,16 +1,17 @@
+import re
 import pytest
+
 from unittest.mock import AsyncMock, patch
 from pymongo.errors import ConnectionFailure
-import re
 
-from app.database import AsyncMongoDBClient
+from app.db.database import AsyncMongoDBClient
 
 
 @pytest.mark.asyncio
 async def test_connect_success():
     """Check database connection success"""
     with patch(
-        "app.database.AsyncMongoClient.aconnect", new_callable=AsyncMock
+        "app.db.database.AsyncMongoClient.aconnect", new_callable=AsyncMock
     ) as mock_connect:
         client = AsyncMongoDBClient()
         await client.connect()
@@ -22,7 +23,7 @@ async def test_connect_success():
 async def test_connect_already_connected():
     """Check database connection when already connected"""
     with patch(
-        "app.database.AsyncMongoClient.aconnect", new_callable=AsyncMock
+        "app.db.database.AsyncMongoClient.aconnect", new_callable=AsyncMock
     ) as mock_connect:
         client = AsyncMongoDBClient()
         client._connected = True
@@ -35,7 +36,7 @@ async def test_get_collection_success():
     """Check database collection retrieval success"""
     mock_db = AsyncMock()
     mock_collection = AsyncMock()
-    with patch("app.database.AsyncMongoClient.__getitem__", return_value=mock_db):
+    with patch("app.db.database.AsyncMongoClient.__getitem__", return_value=mock_db):
         mock_db.__getitem__.return_value = mock_collection
 
         client = AsyncMongoDBClient()
@@ -63,7 +64,7 @@ async def test_get_collection_without_connection():
 async def test_close():
     """Check database connection closing success"""
     with patch(
-        "app.database.AsyncMongoClient.close", new_callable=AsyncMock
+        "app.db.database.AsyncMongoClient.close", new_callable=AsyncMock
     ) as mock_close:
         client = AsyncMongoDBClient()
         client._connected = True
@@ -77,7 +78,7 @@ async def test_close():
 async def test_connect_failure():
     """Check database connection failure"""
     with patch(
-        "app.database.AsyncMongoClient.aconnect",
+        "app.db.database.AsyncMongoClient.aconnect",
         new_callable=AsyncMock,
         side_effect=ConnectionFailure,
     ):

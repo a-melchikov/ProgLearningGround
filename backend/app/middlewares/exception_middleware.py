@@ -6,7 +6,7 @@ from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.errors.base import DatabaseConnectionError
-from app.logger_setup import get_logger
+from app.core.logger_setup import get_logger
 
 logger = get_logger(__name__)
 

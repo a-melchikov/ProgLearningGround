@@ -1,6 +1,6 @@
 import pytest
 from logging import Logger, StreamHandler
-from app.logger_setup import LogConfig, LoggerSetup, LogLevel, get_logger
+from app.core.logger_setup import LogConfig, LoggerSetup, LogLevel, get_logger
 
 
 def test_default_logger_config() -> None:

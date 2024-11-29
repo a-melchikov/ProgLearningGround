@@ -2,7 +2,7 @@ from typing import Any
 from pymongo import AsyncMongoClient
 from pymongo.asynchronous.collection import AsyncCollection
 
-from app.logger_setup import get_logger
+from app.core.logger_setup import get_logger
 
 logger = get_logger(__name__)
 
@@ -14,7 +14,7 @@ class AsyncMongoDBClient:
 
     def __init__(
         self,
-        uri: str = "mongodb://admin:admin@localhost:27017/",
+        uri: str = "mongodb://admin:admin@mongo:27017/",
         database_name: str = "task_database",
     ):
         self._client: AsyncMongoClient[Any] = AsyncMongoClient(uri)

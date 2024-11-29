@@ -16,7 +16,7 @@ services:
     environment:
       - ENV=development
       - PYTHONPATH=/app/app
-      - MONGO_URI=mongodb://mongo:27017/task_database
+      - MONGO_URI=mongodb://admin:admin@mongo:27017/task_database
     networks:
       - my_network
     depends_on:
@@ -50,6 +50,11 @@ services:
       - mongo_data:/data/db
     networks:
       - my_network
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongo_data:

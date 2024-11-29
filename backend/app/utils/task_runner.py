@@ -1,12 +1,43 @@
+import asyncio
+from typing import Any
+
+import httpx
 import docker
-from task_data_loader import open_tasks_json, TEST_CASES, INPUT, OUTPUT
-from code_tester import get_testing_code
-from logger_setup import get_logger
+
+from fastapi import HTTPException, status
+
+from app.utils.code_tester import get_testing_code
+from app.core.logger_setup import get_logger
 
 logger = get_logger(__name__)
+BASE_URL = "http://localhost:8000"
+API_PREFIX = "/api/v1"
 
 
-def run_code_in_docker(task_name: str, user_code: str) -> str:
+async def fetch_task_by_name(name: str) -> dict[str, Any]:
+    """
+    Sends a request to fetch a task by its name.
+
+    Args:
+        name (str): Name of the task.
+
+    Returns:
+        dict: Task data if found.
+
+    Raises:
+        HTTPException: If the request fails or task not found.
+    """
+    async with httpx.AsyncClient() as client:
+        url = f"{BASE_URL}{API_PREFIX}/tasks/{name}"
+        logger.info(f"Fetching task from '{url}'.")
+        response = await client.get(url)
+        response.raise_for_status()
+        task_data: dict[str, Any] = response.json()
+        logger.info(f"Task data fetched successfully for '{name}'.")
+        return task_data
+
+
+async def run_code_in_docker(task_name: str, user_code: str) -> str:
     """
     Runs the user's code in a Docker container and validates it against test cases.
 
@@ -16,30 +47,38 @@ def run_code_in_docker(task_name: str, user_code: str) -> str:
 
     Returns:
         str: A summary string indicating the number and percentage of tests passed.
-
-    Raises:
-        FileNotFoundError: If the tasks JSON file is not found.
-        docker.errors.DockerException: If there is an issue with Docker.
     """
     client = docker.from_env()
     passed_tests = 0
 
     try:
-        data = open_tasks_json(task_name)
-        logger.info(f"Loaded tasks for {task_name} successfully.")
-    except FileNotFoundError as e:
-        logger.error(f"Task file not found: {e}")
-        return "Error: Task file not found."
+        data = await fetch_task_by_name(task_name)
+        logger.info(f"Loaded task '{task_name}' successfully.")
+    except httpx.HTTPStatusError as e:
+        logger.error(
+            f"HTTP error while fetching task '{task_name}': {e.response.status_code} - {e.response.text}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Task '{task_name}' not found",
+        ) from e
+    except ValueError as e:
+        logger.error(f"Failed to parse JSON for task '{task_name}': {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Error parsing JSON",
+        ) from e
 
-    test_cases = data.get(TEST_CASES, [])
+    test_cases: list[dict[str, str]] = data.get("test_cases", [])
+    logger.debug("Test cases: {}".format(test_cases))
 
     if not test_cases:
         logger.warning(f"No test cases found for task '{task_name}'.")
         return "Warning: No test cases found."
 
     for idx, test_case in enumerate(test_cases, start=1):
-        test_input = test_case[INPUT]
-        expected_output = test_case[OUTPUT]
+        test_input = test_case["input"]
+        expected_output = test_case["expected_output"]
 
         test_script = get_testing_code(user_code, test_input, expected_output)
 
@@ -93,5 +132,5 @@ reversed_number = int(str(number)[::-1])
 print(f"{number} + {reversed_number} = {number + reversed_number}")
     """
 
-    summary = run_code_in_docker(task_name, user_code)
-    print(summary)
+    result = asyncio.run(run_code_in_docker(task_name, user_code))
+    print(result)

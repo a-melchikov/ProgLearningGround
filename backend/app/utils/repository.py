@@ -4,9 +4,9 @@ from typing import Any
 from pymongo import errors
 from pymongo.asynchronous.collection import AsyncCollection
 
-from app.database import AsyncMongoDBClient
+from app.db.database import AsyncMongoDBClient
 from app.errors.base import NotFoundError, DatabaseConnectionError
-from app.logger_setup import get_logger
+from app.core.logger_setup import get_logger
 
 logger = get_logger(__name__)
 
