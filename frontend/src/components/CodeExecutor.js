@@ -25,7 +25,7 @@ const CodeExecutor = () => {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/tasks/");
+                const response = await axios.get("http://localhost:8000/api/v1/tasks/");
                 setTasks(response.data);
             } catch (error) {
                 console.error("Error fetching tasks:", error);
@@ -44,7 +44,7 @@ const CodeExecutor = () => {
         setTaskName(selectedTask);
 
         try {
-            const response = await axios.get(`http://localhost:8000/task_details/${selectedTask}/`);
+            const response = await axios.get(`http://localhost:8000/api/v1/tasks/${selectedTask}/`);
             setTaskDetails(response.data);
         } catch (error) {
             console.error("Error fetching task details:", error);
@@ -57,7 +57,7 @@ const CodeExecutor = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:8000/send_task/${taskName}/`,
+                `http://localhost:8000/api/v1/tasks/send_task/${taskName}/`,
                 {code: code}
             );
             setResult(response.data.result);
@@ -88,8 +88,8 @@ const CodeExecutor = () => {
                             disabled={loading}
                         >
                             {tasks.map((task, index) => (
-                                <MenuItem key={index} value={task}>
-                                    {task}
+                                <MenuItem key={index} value={task.name}>
+                                    {task.name}
                                 </MenuItem>
                             ))}
                         </Select>
