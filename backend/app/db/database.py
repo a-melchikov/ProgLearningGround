@@ -64,3 +64,6 @@ class AsyncMongoDBClient:
             logger.warning(
                 "Attempted to close MongoDB connection, but client is not connected."
             )
+
+
+db_client = AsyncMongoDBClient()
