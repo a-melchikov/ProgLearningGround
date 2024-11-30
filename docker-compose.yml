@@ -4,6 +4,8 @@ services:
   backend:
     build:
       context: ./backend
+    env_file:
+      - .env
     container_name: fastapi_backend
     ports:
       - "8000:8000"

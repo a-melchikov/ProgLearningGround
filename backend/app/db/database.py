@@ -3,6 +3,7 @@ from pymongo import AsyncMongoClient
 from pymongo.asynchronous.collection import AsyncCollection
 
 from app.core.logger_setup import get_logger
+from app.core.config import settings
 
 logger = get_logger(__name__)
 
@@ -14,14 +15,14 @@ class AsyncMongoDBClient:
 
     def __init__(
         self,
-        uri: str = "mongodb://admin:admin@mongo:27017/",
-        database_name: str = "task_database",
+        database_name: str = settings.MONG0_DB_NAME,
     ):
-        self._client: AsyncMongoClient[Any] = AsyncMongoClient(uri)
+        self.uri = settings.get_mongo_db_url()
+        self._client: AsyncMongoClient[Any] = AsyncMongoClient(self.uri)
         self.database_name = database_name
         self._connected = False
         logger.info(
-            f"Initialized AsyncMongoDBClient with URI: {uri} and database: {database_name}"
+            f"Initialized AsyncMongoDBClient with URI: {self.uri} and database: {database_name}"
         )
 
     async def connect(self) -> None:
