@@ -1,9 +1,12 @@
+import uvicorn
+
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from app.core.config import settings
 from app.db.database import db_client
 from app.middlewares.exception_middleware import ExceptionMiddleware
 from app.middlewares.logging_middleware import LoggingMiddleware
@@ -49,15 +52,15 @@ app.add_middleware(
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(ExceptionMiddleware)
 
-app.include_router(router=router_v1, prefix="/api/v1")
+app.include_router(router=router_v1, prefix=settings.API_V1_STR)
 
 
 if __name__ == "__main__":
-    import uvicorn
-
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
+        host=settings.BACKEND_HOST,
+        port=settings.BACKEND_PORT,
+        reload=settings.RELOAD,
+        log_level=settings.LOG_LEVEL,
+        timeout_keep_alive=settings.TIMEOUT_KEEP_ALIVE,
     )

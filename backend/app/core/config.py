@@ -20,11 +20,27 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    API_VERSION: str = "v1"
+    API_V1_STR: str = f"/api/{API_VERSION}"
+
+    # mongodb parameters
     MONGO_DB_USER: str
     MONGO_DB_PASSWORD: str
     MONGO_DB_HOST: str
     MONGO_DB_PORT: int
     MONG0_DB_NAME: str
+
+    # application parameters
+    BACKEND_HOST: str
+    BACKEND_PORT: int
+    RELOAD: bool
+    LOG_LEVEL: str
+    TIMEOUT_KEEP_ALIVE: int
+
+    # frontend parameters
+    FRONTEND_HOST: str
+    FRONTEND_PORT: int
+    USE_HTTPS: bool
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -33,6 +49,11 @@ class Settings(BaseSettings):
 
     def get_mongo_db_url(self) -> str:
         return f"mongodb://{self.MONGO_DB_USER}:{self.MONGO_DB_PASSWORD}@{self.MONGO_DB_HOST}:{self.MONGO_DB_PORT}/"
+
+    @property
+    def frontend_origin(self) -> str:
+        protocol = "https" if self.USE_HTTPS else "http"
+        return f"{protocol}://{self.FRONTEND_HOST}:{self.FRONTEND_PORT}"
 
 
 settings = Settings()

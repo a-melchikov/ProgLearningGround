@@ -8,10 +8,11 @@ from fastapi import HTTPException, status
 
 from app.utils.code_tester import get_testing_code
 from app.core.logger_setup import get_logger
+from app.core.config import settings
 
 logger = get_logger(__name__)
-BASE_URL = "http://localhost:8000"
-API_PREFIX = "/api/v1"
+BASE_URL = f"http://{settings.BACKEND_HOST}:{settings.BACKEND_PORT}"
+API_PREFIX = settings.API_V1_STR
 
 
 async def fetch_task_by_name(name: str) -> dict[str, Any]:
