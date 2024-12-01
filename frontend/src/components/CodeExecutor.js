@@ -249,13 +249,30 @@ const CodeExecutor = () => {
                     )}
 
                     <Typography variant="h6">{t.codeEditor}:</Typography>
-                    <CodeMirror
-                        value={code}
-                        extensions={[python()]}
-                        onChange={(value) => handleCodeChange(value)}
-                        height="300px"
-                        theme={theme}
-                    />
+                    <Box
+                        sx={{
+                            padding: 2,
+                            borderRadius: 2,
+                            bgcolor: theme === "dark" ? "#2d2d2d" : "#f4f4f4",
+                            border: `2px solid ${theme === "dark" ? "#6200ea" : "#1976d2"}`,
+                            boxShadow: theme === "dark"
+                                ? "0px 2px 10px rgba(0, 0, 0, 0.5)"
+                                : "0px 2px 10px rgba(0, 0, 0, 0.2)",
+                            marginBottom: 2,
+                        }}
+                    >
+                        <CodeMirror
+                            value={code}
+                            extensions={[python()]}
+                            onChange={(value) => handleCodeChange(value)}
+                            height="300px"
+                            theme={theme}
+                            style={{
+                                background: "transparent",
+                                fontSize: "16px",
+                            }}
+                        />
+                    </Box>
 
                     <Box sx={{textAlign: "center"}}>
                         <Button
