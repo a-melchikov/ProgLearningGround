@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import axios from "axios";
 import {
     Button,
     Typography,
@@ -17,6 +16,7 @@ import {
 import CodeMirror from "@uiw/react-codemirror";
 import {python} from "@codemirror/lang-python";
 import {Brightness4, Brightness7} from "@mui/icons-material";
+import {fetchTasks, fetchTaskDetails, executeTask} from "./api";
 
 const translations = {
     en: {
@@ -54,19 +54,19 @@ const CodeExecutor = () => {
     const t = translations[language];
 
     useEffect(() => {
-        const fetchTasks = async () => {
+        const loadTasks = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/v1/tasks/");
-                setTasks(response.data);
+                const tasks = await fetchTasks();
+                setTasks(tasks);
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
         };
 
-        fetchTasks();
+        loadTasks();
     }, []);
 
-    const handleCodeChange = (value) => {                                        // Стиль для выбранного элемента
+    const handleCodeChange = (value) => {
 
         setCode(value);
     };
@@ -76,10 +76,8 @@ const CodeExecutor = () => {
         setTaskName(selectedTask);
 
         try {
-            const response = await axios.get(
-                `http://localhost:8000/api/v1/tasks/${selectedTask}/`
-            );
-            setTaskDetails(response.data);
+            const details = await fetchTaskDetails(selectedTask);
+            setTaskDetails(details);
         } catch (error) {
             console.error("Error fetching task details:", error);
         }
@@ -90,11 +88,8 @@ const CodeExecutor = () => {
         setResult("");
 
         try {
-            const response = await axios.post(
-                `http://localhost:8000/api/v1/tasks/send_task/${taskName}/`,
-                {code: code}
-            );
-            setResult(response.data.result);
+            const result = await executeTask(taskName, code);
+            setResult(result);
         } catch (error) {
             console.error("Error executing code:", error);
             setResult("Error executing code");
