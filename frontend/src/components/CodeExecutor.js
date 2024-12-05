@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo, useCallback} from "react";
 import {
     Button,
     Typography,
@@ -53,7 +53,7 @@ const CodeExecutor = ({toggleTheme, theme}) => {
     const [taskDetails, setTaskDetails] = useState(null);
     const [language, setLanguage] = useState("en");
 
-    const t = translations[language];
+    const t = useMemo(() => translations[language], [language]);
 
     useEffect(() => {
         const loadTasks = async () => {
@@ -68,11 +68,11 @@ const CodeExecutor = ({toggleTheme, theme}) => {
         loadTasks();
     }, []);
 
-    const handleCodeChange = (value) => {
+    const handleCodeChange = useCallback((value) => {
         setCode(value);
-    };
+    }, []);
 
-    const handleTaskNameChange = async (e) => {
+    const handleTaskNameChange = useCallback(async (e) => {
         const selectedTask = e.target.value;
         setTaskName(selectedTask);
 
@@ -82,9 +82,9 @@ const CodeExecutor = ({toggleTheme, theme}) => {
         } catch (error) {
             console.error("Error fetching task details:", error);
         }
-    };
+    }, []);
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         setLoading(true);
         setResult("");
 
@@ -97,11 +97,97 @@ const CodeExecutor = ({toggleTheme, theme}) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [taskName, code]);
 
-    const toggleLanguage = () => {
+    const toggleLanguage = useCallback(() => {
         setLanguage((prevLanguage) => (prevLanguage === "en" ? "ru" : "en"));
-    };
+    }, []);
+
+    const taskMenuItems = useMemo(() => (
+        tasks.map((task, index) => (
+            <MenuItem key={index} value={task.name}>
+                {task.name}
+            </MenuItem>
+        ))
+    ), [tasks]);
+
+    const taskDetailsContent = useMemo(() => (
+        taskDetails && (
+            <Box
+                sx={{
+                    padding: 2,
+                    borderRadius: 2,
+                    border: `1px solid ${theme === "dark" ? "#444" : "#ccc"}`,
+                    backgroundColor: theme === "dark" ? "#424242" : "#fff",
+                }}
+            >
+                <Typography
+                    variant="h5"
+                    sx={{
+                        mb: 2,
+                        color: theme === "dark" ? "#90caf9" : "inherit",
+                    }}
+                >
+                    {t.description}:
+                </Typography>
+                <Typography sx={{mb: 2}}>{taskDetails.description}</Typography>
+
+                <Box sx={{mb: 2}}>
+                    <Typography
+                        variant="h6"
+                        sx={{color: theme === "dark" ? "#81c784" : "primary.main"}}
+                    >
+                        {t.input}:
+                    </Typography>
+                    <Typography sx={{ml: 2, fontStyle: "italic"}}>
+                        {taskDetails.input}
+                    </Typography>
+                </Box>
+
+                <Box sx={{mb: 2}}>
+                    <Typography
+                        variant="h6"
+                        sx={{color: theme === "dark" ? "#81c784" : "primary.main"}}
+                    >
+                        {t.output}:
+                    </Typography>
+                    <Typography sx={{ml: 2, fontStyle: "italic"}}>
+                        {taskDetails.output}
+                    </Typography>
+                </Box>
+
+                <Typography
+                    variant="h6"
+                    sx={{
+                        color: theme === "dark" ? "#ffb74d" : "primary.main",
+                        mt: 2,
+                        mb: 1,
+                    }}
+                >
+                    {t.examples}:
+                </Typography>
+                {taskDetails.examples.map((example, index) => (
+                    <Paper
+                        key={index}
+                        elevation={2}
+                        sx={{
+                            p: 2,
+                            mb: 1,
+                            backgroundColor: theme === "dark" ? "#333" : "#fff",
+                            color: theme === "dark" ? "#e0e0e0" : "#000",
+                        }}
+                    >
+                        <Typography variant="body1">
+                            <strong>{t.input}:</strong> {example.input}
+                        </Typography>
+                        <Typography variant="body1">
+                            <strong>{t.output}:</strong> {example.output}
+                        </Typography>
+                    </Paper>
+                ))}
+            </Box>
+        )
+    ), [taskDetails, theme, t]);
 
     return (
         <Box sx={{height: "100vh", overflow: "auto"}}>
@@ -142,89 +228,11 @@ const CodeExecutor = ({toggleTheme, theme}) => {
                             onChange={handleTaskNameChange}
                             disabled={loading}
                         >
-                            {tasks.map((task, index) => (
-                                <MenuItem key={index} value={task.name}>
-                                    {task.name}
-                                </MenuItem>
-                            ))}
+                            {taskMenuItems}
                         </Select>
                     </FormControl>
 
-                    {taskDetails && (
-                        <Box
-                            sx={{
-                                padding: 2,
-                                borderRadius: 2,
-                                border: `1px solid ${theme === "dark" ? "#444" : "#ccc"}`,
-                                backgroundColor: theme === "dark" ? "#424242" : "#fff",
-                            }}
-                        >
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    mb: 2,
-                                    color: theme === "dark" ? "#90caf9" : "inherit",
-                                }}
-                            >
-                                {t.description}:
-                            </Typography>
-                            <Typography sx={{mb: 2}}>{taskDetails.description}</Typography>
-
-                            <Box sx={{mb: 2}}>
-                                <Typography
-                                    variant="h6"
-                                    sx={{color: theme === "dark" ? "#81c784" : "primary.main"}}
-                                >
-                                    {t.input}:
-                                </Typography>
-                                <Typography sx={{ml: 2, fontStyle: "italic"}}>
-                                    {taskDetails.input}
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{mb: 2}}>
-                                <Typography
-                                    variant="h6"
-                                    sx={{color: theme === "dark" ? "#81c784" : "primary.main"}}
-                                >
-                                    {t.output}:
-                                </Typography>
-                                <Typography sx={{ml: 2, fontStyle: "italic"}}>
-                                    {taskDetails.output}
-                                </Typography>
-                            </Box>
-
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    color: theme === "dark" ? "#ffb74d" : "primary.main",
-                                    mt: 2,
-                                    mb: 1,
-                                }}
-                            >
-                                {t.examples}:
-                            </Typography>
-                            {taskDetails.examples.map((example, index) => (
-                                <Paper
-                                    key={index}
-                                    elevation={2}
-                                    sx={{
-                                        p: 2,
-                                        mb: 1,
-                                        backgroundColor: theme === "dark" ? "#333" : "#fff",
-                                        color: theme === "dark" ? "#e0e0e0" : "#000",
-                                    }}
-                                >
-                                    <Typography variant="body1">
-                                        <strong>{t.input}:</strong> {example.input}
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        <strong>{t.output}:</strong> {example.output}
-                                    </Typography>
-                                </Paper>
-                            ))}
-                        </Box>
-                    )}
+                    {taskDetailsContent}
 
                     <Typography variant="h6">{t.codeEditor}:</Typography>
                     <Box
@@ -239,7 +247,7 @@ const CodeExecutor = ({toggleTheme, theme}) => {
                             value={code}
                             extensions={[python()]}
                             theme={theme === "dark" ? dracula : githubLight}
-                            onChange={(value) => handleCodeChange(value)}
+                            onChange={handleCodeChange}
                             height="300px"
                         />
                     </Box>
