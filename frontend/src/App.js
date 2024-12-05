@@ -1,14 +1,22 @@
-import React from "react";
-import CodeExecutor from "./components/CodeExecutor";
-import {CssBaseline} from "@mui/material";
+import React, { useState } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import { lightTheme, darkTheme } from './theme';
+import CodeExecutor from './components/CodeExecutor';
 
-function App() {
+const App = () => {
+    const [theme, setTheme] = useState('dark');
+
+    const toggleTheme = () => {
+        setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    };
+
     return (
-        <div className="App">
-            <CssBaseline/>
-            <CodeExecutor/>
-        </div>
+        <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
+            <CssBaseline />
+            <CodeExecutor toggleTheme={toggleTheme} theme={theme} />
+        </ThemeProvider>
     );
-}
+};
 
 export default App;
