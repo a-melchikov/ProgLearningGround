@@ -116,17 +116,19 @@ class MongoDBRepository(AbstractRepository):
             ) from e
 
     async def find_all(
-        self, filter_query: dict[str, Any] | None = None
+        self,
+        filter_query: dict[str, Any] | None = None,
+        projection: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         """
         Finds all documents in the collection that match the filter query.
         """
         try:
             collection = await self._get_collection()
-            cursor = collection.find(filter_query or {})
+            cursor = collection.find(filter_query or {}, projection or {})
             documents = await cursor.to_list(length=None)
             logger.info(
-                f"Found {len(documents)} {self.log_name}(s) for query: {filter_query}"
+                f"Found {len(documents)} {self.log_name}(s) for query: {filter_query} with projection: {projection}"
             )
             return documents
         except errors.PyMongoError as e:

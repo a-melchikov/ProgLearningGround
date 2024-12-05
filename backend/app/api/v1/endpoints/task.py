@@ -37,6 +37,17 @@ async def get_all_tasks(
     return tasks
 
 
+@router.get("/names", response_model=list[str])
+async def get_all_task_names(
+    task_service: Annotated[TaskService, Depends(get_task_service)],
+) -> list[str]:
+    """
+    Retrieve all task names.
+    """
+    task_names = await task_service.get_all_task_names()
+    return task_names
+
+
 @router.get("/{name}", response_model=TaskSchema)
 async def get_task_by_name(  # type: ignore
     name: str,

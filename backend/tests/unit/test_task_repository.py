@@ -66,7 +66,30 @@ async def test_get_tasks_success(task_repository):
     result = await task_repository.find_all()
 
     assert result == [{"name": "task1"}, {"name": "task2"}]
-    mock_collection.find.assert_called_once_with({})
+    mock_collection.find.assert_called_once_with({}, {})
+
+
+@pytest.mark.asyncio
+async def test_get_only_task_names_success(task_repository):
+    mock_collection = await task_repository.db_client.get_collection("tasks")
+    mock_cursor = AsyncMock()
+    mock_cursor.to_list.return_value = [
+        {"name": "task1"},
+        {"name": "task2"},
+        {"name": "task3"},
+    ]
+    mock_collection.find.return_value = mock_cursor
+
+    expected_result = [
+        {"name": "task1"},
+        {"name": "task2"},
+        {"name": "task3"},
+    ]
+    projection = {"name": True, "description": False}
+
+    result = await task_repository.find_all(projection=projection)
+    assert result == expected_result
+    mock_collection.find.assert_called_once_with({}, projection)
 
 
 @pytest.mark.asyncio

@@ -17,6 +17,15 @@ class TaskService:
         tasks = await self.task_repository.find_all()
         return [TaskSchema.model_validate(task) for task in tasks]
 
+    async def get_all_task_names(self) -> list[str]:
+        """
+        Retrieve all task names.
+        """
+        task_names = await self.task_repository.find_all(
+            projection={"_id": False, "name": True}
+        )
+        return [task["name"] for task in task_names]
+
     async def get_task_by_name(self, name: str) -> TaskSchema:
         """
         Retrieve a specific task by its name.
