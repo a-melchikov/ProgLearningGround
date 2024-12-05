@@ -119,7 +119,7 @@ async def delete_task(
 
 
 @router.post(
-    "/send_task/{task_name}/",
+    "/send_task/{task_name}",
     tags=["Tasks"],
     response_model=dict[str, str],
 )

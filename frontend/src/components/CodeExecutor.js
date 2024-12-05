@@ -105,8 +105,8 @@ const CodeExecutor = ({toggleTheme, theme}) => {
 
     const taskMenuItems = useMemo(() => (
         tasks.map((task, index) => (
-            <MenuItem key={index} value={task.name}>
-                {task.name}
+            <MenuItem key={index} value={task}>
+                {task}
             </MenuItem>
         ))
     ), [tasks]);
