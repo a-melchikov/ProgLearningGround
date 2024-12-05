@@ -19,6 +19,7 @@ import {Brightness4, Brightness7} from "@mui/icons-material";
 import {fetchTasks, fetchTaskDetails, executeTask} from "./api";
 import {dracula} from "@uiw/codemirror-theme-dracula";
 import {githubLight} from "@uiw/codemirror-theme-github";
+import ResultCard from "./ResultCard";
 
 const translations = {
     en: {
@@ -252,28 +253,8 @@ const CodeExecutor = ({toggleTheme, theme}) => {
                             {loading ? <CircularProgress size={24}/> : t.runCode}
                         </Button>
                     </Box>
-                    <Box
-                        sx={{
-                            mt: 3,
-                            textAlign: "center",
-                            backgroundColor: "transparent",
-                            color: result.includes("100.00%")
-                                ? theme === "dark"
-                                    ? "#4caf50"
-                                    : "#388e3c"
-                                : result.includes("0.00%")
-                                    ? theme === "dark"
-                                        ? "#ff5252"
-                                        : "#d32f2f"
-                                    : theme === "dark"
-                                        ? "#ffa726"
-                                        : "#f57c00",
-                        }}
-                    >
-                        <Typography variant="h6" sx={{fontWeight: "bold"}}>
-                            {result}
-                        </Typography>
-                    </Box>
+
+                    {result && <ResultCard result={result}/>}
                 </Box>
             </Paper>
         </Box>
