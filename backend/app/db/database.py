@@ -15,7 +15,7 @@ class AsyncMongoDBClient:
 
     def __init__(
         self,
-        database_name: str = settings.MONG0_DB_NAME,
+        database_name: str = settings.MONGO_DB_NAME,
     ):
         self.uri = settings.get_mongo_db_url()
         self._client: AsyncMongoClient[Any] = AsyncMongoClient(self.uri)

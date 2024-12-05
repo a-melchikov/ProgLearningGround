@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     MONGO_DB_PASSWORD: str
     MONGO_DB_HOST: str
     MONGO_DB_PORT: int
-    MONG0_DB_NAME: str
+    MONGO_DB_NAME: str
 
     # application parameters
     BACKEND_HOST: str
