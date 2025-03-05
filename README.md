@@ -55,3 +55,14 @@ before committing code to the repository.
 - **Black**: Formats the code.
 - **Mypy**: Performs static type checks.
 - **Pytest**: Runs the test suite.
+
+## Application Screenshot
+
+Here is a screenshot of the main page (dark theme):
+![img.png](assets/img.png)
+Screenshot of the main page (light theme):
+![img.png](assets/img1.png)
+Correctly passed tests:
+![img.png](assets/img2.png)
+Incorrectly passed tests:
+![img.png](assets/img4.png)
